@@ -1,0 +1,1178 @@
+
+##########################################################"
+####################BASE CREATION#########################
+
+
+libname datahfcs "/home/u63583309/HFCS/Data_HFCS";
+
+libname lectV1 "/home/u63583309/LECT_HFCS/lectV1"; 
+libname lectV2 "/home/u63583309/LECT_HFCS/lectV2"; 
+libname lectV3 "/home/u63583309/LECT_HFCS/lectV3"; 
+libname lectV4 "/home/u63583309/LECT_HFCS/lectV4"; 
+
+
+ 
+/*** D ***/
+
+/* Join all the implactes */
+data d1_copy;
+  set lectV1.d1;
+run;
+
+/* Append d2 to d1_copy */
+proc append base=d1_copy data=lectV1.d2 force; 
+run;
+
+/* Append d3 to d1_copy */
+proc append base=d1_copy data=lectV1.d3 force; 
+run;
+
+/* Append d4 to d1_copy */
+proc append base=d1_copy data=lectV1.d4 force; 
+run;
+
+/* Append d5 to d1_copy */
+proc append base=d1_copy data=lectV1.d5 force; 
+run;
+
+
+/* Keep the variables needed */ 
+data d1_copy;
+set d1_copy;
+keep ID SA0010 SA0100 IM0100 
+DA1110 DA1122 DA2101 DA1200 DA2104 DA2105 DA2102 DA2109 DL1100 DL1200 DA2103 DI1100 DI1200 DHAGEH1 DH0004 DH0001 
+;
+run;
+
+/*** H ***/ 
+
+data h1_copy;
+  set lectV1.h1;
+run;
+
+
+proc append base=h1_copy data=lectV1.h2 force; 
+run;
+
+proc append base=h1_copy data=lectV1.h3 force; 
+run;
+
+proc append base=h1_copy data=lectV1.h4 force; 
+run;
+
+proc append base=h1_copy data=lectV1.h5 force; 
+run;
+
+
+data h1_copy;
+set h1_copy;
+keep ID SA0010 SA0100 IM0100 HW0010 
+;
+run;
+
+/*** P ***/ 
+
+data p1_copy;
+  set lectV1.p1;
+run;
+
+
+proc append base=p1_copy data=lectV1.p2 force; 
+run;
+
+proc append base=p1_copy  data=lectV1.p3 force; 
+run;
+
+proc append base=p1_copy  data=lectV1.p4 force; 
+run;
+
+proc append base=p1_copy  data=lectV1.p5 force; 
+run;
+
+
+data p1_copy;
+set p1_copy;
+keep ID SA0010 SA0100 IM0100 PE0600 PG0110 PG0210 RA0300 RA0010 hid
+;
+run;
+
+
+
+/*** Sort the datasets to merge them ***/ 
+
+proc sort data=p1_copy;by SA0010 SA0100 IM0100;run;
+proc sort data=h1_copy;by SA0010 SA0100 IM0100;run;
+proc sort data=d1_copy;by SA0010 SA0100 IM0100;run;
+
+/* Merge the datasets */
+
+data datahfcs.hfcs2010 ;
+merge d1_copy (in=a) p1_copy (in=b) h1_copy (in=c);
+by SA0010 SA0100 IM0100;
+if a and b and c;
+run;
+
+
+proc sort data=datahfcs.hfcs2010  ;
+by SA0100 SA0010 IM0100;
+run;
+
+
+/*** Keep one person by households  ***/ 
+
+
+proc sort data=datahfcs.hfcs2010  out=datahfcs.hfcs2010_head  nodupkeys; by  SA0100 SA0010 IM0100;run;
+
+
+/* proc export data=data.head
+    outfile='/home/u63583309/V2/Excel/base_head.xlsx'
+    dbms=xlsx
+    replace;
+run;*/
+
+
+/******** VAGUE 2 *******/ 
+
+ 
+/*** D ***/
+
+
+data d1_copy;
+  set lectV2.d1;
+run;
+
+/* Append d2 to d1_copy */
+proc append base=d1_copy data=lectV2.d2 force; 
+run;
+
+/* Append d3 to d1_copy */
+proc append base=d1_copy data=lectV2.d3 force; 
+run;
+
+/* Append d4 to d1_copy */
+proc append base=d1_copy data=lectV2.d4 force; 
+run;
+
+/* Append d5 to d1_copy */
+proc append base=d1_copy data=lectV2.d5 force; 
+run;
+
+
+data d1_copy;
+set d1_copy;
+keep ID SA0010 SA0100 IM0100 DOCOGOOD DOFOODC
+DA1110 DA1122 DA2101 DA1200 DA2104 DA2105 DA2102 DA2109 DL1100 DL1200 DA2103 DI1100 DI1200 DHAGEH1 DH0004 DH0001 
+;
+run;
+
+/*** H ***/ 
+
+data h1_copy;
+  set lectV4.h1;
+run;
+
+proc append base=h1_copy data=lectV2.h2 force; 
+run;
+
+proc append base=h1_copy data=lectV2.h3 force; 
+run;
+
+proc append base=h1_copy data=lectV2.h4 force; 
+run;
+
+proc append base=h1_copy data=lectV2.h5 force; 
+run;
+
+
+data h1_copy;
+set h1_copy;
+keep ID SA0010 SA0100 IM0100 HW0010 HI0210 HI0220 HI0100 HI0200
+;
+run;
+
+/*** P ***/ 
+
+data p1_copy;
+  set lectV2.p1;
+run;
+
+
+proc append base=p1_copy data=lectV2.p2 force; 
+run;
+
+proc append base=p1_copy  data=lectV2.p3 force; 
+run;
+
+proc append base=p1_copy  data=lectV2.p4 force; 
+run;
+
+proc append base=p1_copy  data=lectV2.p5 force; 
+run;
+
+
+data p1_copy;
+set p1_copy;
+keep ID SA0010 SA0100 IM0100 PE0600 PG0110 PG0210 RA0300 RA0010 hid
+;
+run;
+
+
+
+
+
+proc sort data=p1_copy;by SA0010 SA0100 IM0100;run;
+proc sort data=h1_copy;by SA0010 SA0100 IM0100;run;
+proc sort data=d1_copy;by SA0010 SA0100 IM0100;run;
+
+/* Merge the datasets */
+
+data datahfcs.hfcs2014  ;
+merge d1_copy (in=a) p1_copy (in=b) h1_copy (in=c);
+by SA0010 SA0100 IM0100;
+if a and b and c;
+run;
+
+
+proc sort data=datahfcs.hfcs2014 ;
+by SA0100 SA0010 IM0100;
+run;
+
+/*** Keep one person by households  ***/ 
+
+proc sort data=datahfcs.hfcs2014 out=datahfcs.hfcs2014_head  nodupkeys; by  SA0100 SA0010 IM0100;run;
+
+
+
+/******** VAGUE 3 *******/ 
+
+ 
+/*** D ***/
+
+
+data d1_copy;
+  set lectV3.d1;
+run;
+
+/* Append d2 to d1_copy */
+proc append base=d1_copy data=lectV3.d2 force; 
+run;
+
+/* Append d3 to d1_copy */
+proc append base=d1_copy data=lectV3.d3 force; 
+run;
+
+/* Append d4 to d1_copy */
+proc append base=d1_copy data=lectV3.d4 force; 
+run;
+
+/* Append d5 to d1_copy */
+proc append base=d1_copy data=lectV3.d5 force; 
+run;
+
+
+data d1_copy;
+set d1_copy;
+keep ID SA0010 SA0100 IM0100 DOCOGOOD DOFOODC
+DA1110 DA1122 DA2101 DA1200 DA2104 DA2105 DA2102 DA2109 DL1100 DL1200 DA2103 DI1100 DI1200 DHAGEH1 DH0004 DH0001 
+;
+run;
+
+/*** H ***/ 
+
+
+
+data h1_copy ;
+  set lectV3.h1;
+run;
+
+
+proc append base=h1_copy data=lectv3.h2 force; 
+run;
+
+proc append base=h1_copy data=lectV3.h3 force; 
+run;
+
+proc append base=h1_copy data=lectV3.h4 force; 
+run;
+
+proc append base=h1_copy data=lectV3.h5 force; 
+run;
+
+
+data h1_copy;
+set h1_copy;
+keep ID SA0010 SA0100 IM0100 HW0010  HW0010 HI0210 HI0220 HI0100 HI0200
+/* Variables pour faire du panel SA0200 SA0210 */
+;
+run;
+
+/*** P ***/ 
+
+data p1_copy;
+  set lectV3.p1;
+run;
+
+
+proc append base=p1_copy data=lectV3.p2 force; 
+run;
+
+proc append base=p1_copy  data=lectV3.p3 force; 
+run;
+
+proc append base=p1_copy  data=lectV3.p4 force; 
+run;
+
+proc append base=p1_copy  data=lectV3.p5 force; 
+run;
+
+
+data p1_copy;
+set p1_copy;
+keep ID SA0010 SA0100 IM0100 PE0600 PG0110 PG0210 RA0300 RA0010 hid
+;
+run;
+
+
+
+
+
+proc sort data=p1_copy;by SA0010 SA0100 IM0100;run;
+proc sort data=h1_copy;by SA0010 SA0100 IM0100;run;
+proc sort data=d1_copy;by SA0010 SA0100 IM0100;run;
+
+
+
+
+data datahfcs.hfcs2017  ;
+merge d1_copy (in=a) p1_copy (in=b) h1_copy (in=c);
+by SA0010 SA0100 IM0100;
+if a and b and c;
+run;
+
+
+proc sort data=datahfcs.hfcs2017 ;
+by SA0100 SA0010 IM0100;
+run;
+
+
+
+proc sort data=datahfcs.hfcs2017 out=datahfcs.hfcs2017_head  nodupkeys; by  SA0100 SA0010 IM0100;run;
+
+
+
+/******** VAGUE 4 *******/ 
+
+
+/*** D ***/
+
+
+data d1_copy;
+  set lectV4.d1;
+run;
+
+/* Append d2 to d1_copy */
+proc append base=d1_copy data=lectV4.d2 force; 
+run;
+
+/* Append d3 to d1_copy */
+proc append base=d1_copy data=lectV4.d3 force; 
+run;
+
+/* Append d4 to d1_copy */
+proc append base=d1_copy data=lectV4.d4 force; 
+run;
+
+/* Append d5 to d1_copy */
+proc append base=d1_copy data=lectV4.d5 force; 
+run;
+
+
+data d1_copy;
+set d1_copy;
+keep ID SA0010 SA0100 IM0100 DOCOGOOD DOCOUTIL DOFOODC
+DA1110 DA1122 DA2101 DA1200 DA2104 DA2105 DA2102 DA2109 DL1100 DL1200 DA2103 DI1100 DI1200 DHAGEH1 DH0004 DH0001 
+;
+run;
+
+/*** H ***/ 
+
+data h1_copy;
+  set lectV4.h1;
+run;
+
+
+proc append base=h1_copy data=lectV4.h2 force; 
+run;
+
+proc append base=h1_copy data=lectV4.h3 force; 
+run;
+
+proc append base=h1_copy data=lectV4.h4 force; 
+run;
+
+proc append base=h1_copy data=lectV4.h5 force; 
+run;
+
+
+data h1_copy;
+set h1_copy;
+keep ID SA0010 SA0100 IM0100 HW0010 HW0010 HI0210 HI0220 HI0100 HI0200
+;
+run;
+
+/*** P ***/ 
+
+data p1_copy;
+  set lectV4.p1;
+run;
+
+
+proc append base=p1_copy data=lectV4.p2 force; 
+run;
+
+proc append base=p1_copy  data=lectV4.p3 force; 
+run;
+
+proc append base=p1_copy  data=lectV4.p4 force; 
+run;
+
+proc append base=p1_copy  data=lectV4.p5 force; 
+run;
+
+
+data p1_copy;
+set p1_copy;
+keep ID SA0010 SA0100 IM0100 PE0600 PG0110 PG0210 RA0300 RA0010 hid
+;
+run;
+
+
+
+/*** Ordonner les tables ***/ 
+
+proc sort data=p1_copy;by SA0010 SA0100 IM0100;run;
+proc sort data=h1_copy;by SA0010 SA0100 IM0100;run;
+proc sort data=d1_copy;by SA0010 SA0100 IM0100;run;
+
+
+/*** Merge les 3 tables ***/ 
+
+data datahfcs.hfcs2021;
+merge d1_copy (in=a) p1_copy (in=b) h1_copy (in=c);
+by SA0010 SA0100 IM0100;
+if a and b and c;
+run;
+
+
+proc sort data=datahfcs.hfcs2021;
+by SA0100 SA0010 IM0100;
+run;
+
+
+/*** On selectionne 1 individu par foyer  ***/ 
+
+
+proc sort data=datahfcs.hfcs2021 out=datahfcs.hfcs2021_head   nodupkeys; by  SA0100 SA0010 IM0100;run;
+
+
+
+/**************************************************************************/ 
+/**********************INFLATION ADJUSTMENT FACTORS************************/ 
+/**************************************************************************/ 
+
+%macro import(chemin, data_out);
+    /* Définir le chemin du fichier en s'assurant que l'espace dans le nom du fichier est géré correctement */
+    filename csvfile "&chemin";
+
+    proc import datafile=csvfile
+        out=&data_out /* Nom de la table de sortie dans SAS */
+        dbms=csv
+        replace; /* Ajout de l'option replace pour écraser les datasets existants */
+        delimiter=';'; 
+        getnames=yes; /* Prendre la première ligne comme noms de variables */
+        datarow=2; /* Commencer à lire les données à partir de la deuxième ligne */
+    run;
+%mend import;
+
+%import(chemin=/home/u63583309/HFCS/Data_HFCS/inflation_v1.csv, data_out=datahfcs.inflation_v1);
+%import(chemin=/home/u63583309/HFCS/Data_HFCS/inflation_v2.csv, data_out=datahfcs.inflation_v2);
+%import(chemin=/home/u63583309/HFCS/Data_HFCS/inflation_v3.csv, data_out=datahfcs.inflation_v3);
+
+
+
+###########################################################################
+#########################CALCULATION#######################################
+
+
+libname datahfcs "/home/u63583309/HFCS/Data_HFCS";
+libname weight "/home/u63583309/HFCS/Data_HFCS/Weight" ; 
+libname infla "/home/u63583309/HFCS/Data_HFCS/Inflation" ; 
+libname final "/home/u63583309/HFCS/Data_HFCS/final"; 
+
+*This macro is designed to be used with the HFCS datasets from 2010 to 2021 to 
+produce variables aggregated by age at the individual level.
+
+libname DATASCF "library where HFCS  datasets are stored";
+
+*NOTE: This program assumes the HFCS are stored in a library named datahfcs
+The created tables will be stored in the same location. If you want to change the library, 
+modify it in the macro calls. ;
+
+		
+*NOTE : This macro assumes that the inflation tables are recorded under the name 
+inflation_wave and are stored in a library named infla. In the inflation tables 
+the country variable must be in the same format and has the same name as in the HFCS table.  
+If you want to change the library, modify it in the macro calls.;
+
+/**************************************************************************/
+
+						/* PART : I */
+			
+		*Variables available at the household level and with 
+		the reference person's age. 
+			
+		Variables:  DA1110 DA1122 DA1200 DA2104 DA2105 DA2109 
+					DA2101 DL1100 DA2102 DL1200 DA2103 ; 
+
+/**************************************************************************/		 
+			 
+
+/**************************************************************************/ 
+/**********************CHANGE MISSING VALUE BY ZERO************************/ 
+/**************************************************************************/ 
+
+*Replace all missing values with zeros ;
+
+%macro zero (data) ;
+
+data &data._zero ;
+    set &data ;
+    array num_vars[*] _numeric_; 
+    do i = 1 to dim(num_vars);
+        if missing(num_vars[i]) then num_vars[i] = 0;
+    end;
+run;
+
+%mend zero ;
+
+/* Call the macro for the specified dataset */
+/* Here you can change, add or remove a dataset */ 
+
+%zero (data=datahfcs.hfcs2010_head) ;
+%zero (data=datahfcs.hfcs2014_head) ;
+%zero (data=datahfcs.hfcs2017_head) ;
+%zero (data=datahfcs.hfcs2021_head) ;
+
+
+
+/**************************************************************************/ 
+/********************VARIABLE NUMBER OF HOUSEHOLD MUMBER*******************/ 
+/**************************************************************************/ 
+
+
+*Divide the variables by the square root of the number of people in the household ; 
+
+%macro divide_square(data=);
+
+data &data;
+    set &data;
+
+    /* Define arrays for the specified variables. Here you can change, add or remove the variables that you want */
+    array var_list[12] DA1110 DA1122 DA1200 DA2104 DA2105 DA2109 DA2101 DL1100 DA2102 DL1200 DA2103 DOCOGOOD;
+    array output_list[12] DA1110_ind DA1122_ind DA1200_ind DA2104_ind DA2105_ind DA2109_ind 
+    	  DA2101_ind DL1100_ind DA2102_ind DL1200_ind DA2103_ind DOCOGOOD_ind; 
+
+
+    do i = 1 to dim(var_list);
+        if DH0001 > 0 then output_list[i] = var_list[i] / sqrt(DH0001);
+        else output_list[i] = .;
+    end;
+run;
+
+%mend divide_square;
+
+/* Call the macro for the specified dataset */
+%divide_square(data=datahfcs.hfcs2010_head_zero);
+%divide_square(data=datahfcs.hfcs2014_head_zero);
+%divide_square(data=datahfcs.hfcs2017_head_zero);
+%divide_square(data=datahfcs.hfcs2021_head_zero);
+
+
+/**************************************************************************/ 
+/************************** AGREGATION OF VARIABLES ***********************/ 
+/**************************************************************************/
+
+
+/* A) MEAN ; 
+
+* We calculate the average of the variables created by age (DHAGEH1) and by 
+implications (IM0100), weight it by household weights (HW0010), and exclude 
+countries outside the eurozone ;
+
+/***/
+
+%macro AGHFCS(data, varname, wave);
+
+
+    /* Ensure data is sorted by the classification variables (mandatory when using the 'by' function) */
+    proc sort data=&data.;
+        by DHAGEH1 SA0100 IM0100;  
+    run;
+   
+    /* Calculate the weighted mean for specified variables */
+    proc summary data=&data nway ;
+    	/* Here it is possible to change the countries included and the age limite */ 
+        where SA0100 not in ('E1', 'HU', 'PL', 'HR', 'CZ') and DHAGEH1 > 19 ; 
+        var &varname;  
+        output out=summary_&wave (drop=_TYPE_ _FREQ_)
+            mean=&varname. / autoname; 
+        /* Here it's possible to change the filters */ 
+        by  DHAGEH1 SA0100 IM0100;
+        weight HW0010; 
+    run;
+
+    /* Calculate unweighted mean of previously computed weighted means by DHAGEH1 and SA0100 to compute the implicates */ 
+    proc summary data=summary_&wave nway;
+        var &varname. ;  
+        output out=datahfcs.ag_&wave (drop=_TYPE_ _FREQ_)
+            mean=&varname / autoname;  
+        by DHAGEH1 SA0100;  /* Here it's possible to change the filters */ 
+    run; 
+    
+    /* Remove the '_ind' suffix from variable names in the output dataset */
+    data datahfcs.ag_&wave;
+        set datahfcs.ag_&wave;
+        %let count = %sysfunc(countw(&varname));
+        %do i = 1 %to &count;
+            %let var = %scan(&varname, &i);
+            %let newvar = %sysfunc(tranwrd(&var, _ind, ));
+            rename &var. = &newvar;
+        %end;
+    run;
+
+
+%mend AGHFCS;
+
+/* Call the macro for the specified dataset */
+/* Here add or delete a variable in the varname input */ 
+
+/* HFCS 2010 : V1 */
+%AGHFCS(data=datahfcs.hfcs2010_head_zero, 
+		varname=DA1110_ind DA1122_ind DA1200_ind DA2104_ind  DA2105_ind 
+		DA2109_ind DA2101_ind DL1100_ind DA2102_ind DL1200_ind DA2103_ind , 
+		wave=V1);
+
+
+/* HFCS 2014 : V2 */
+%AGHFCS(data=datahfcs.hfcs2014_head_zero, 
+		varname=DA1110_ind DA1122_ind DA1200_ind DA2104_ind  DA2105_ind 
+		DA2109_ind DA2101_ind DL1100_ind DA2102_ind DL1200_ind DA2103_ind DOCOGOOD_ind, 
+		wave=V2);
+		
+/* HFCS 2016 : V3 */
+%AGHFCS(data=datahfcs.hfcs2017_head_zero, 
+		varname=DA1110_ind DA1122_ind DA1200_ind DA2104_ind  DA2105_ind 
+		DA2109_ind DA2101_ind DL1100_ind DA2102_ind DL1200_ind DA2103_ind DOCOGOOD_ind, 
+		wave=V3);		
+
+
+/* HFCS 2021 : V4 */
+%AGHFCS(data=datahfcs.hfcs2021_head_zero, 
+		varname=DA1110_ind DA1122_ind DA1200_ind DA2104_ind  DA2105_ind 
+		DA2109_ind DA2101_ind DL1100_ind DA2102_ind DL1200_ind DA2103_ind DOCOGOOD_ind, 
+		wave=V4);
+
+
+
+* B) CREATION OF NEW VARIABLES ; 
+
+
+%macro CREA(data);
+
+
+data &data.  ;
+    set &data. ;
+    Real_fi_assets = sum(DA1200, DA2104, DA2105, DA2102/2, DA2109/2);
+    Nominal_fi_assets = sum(DA2101, -DL1100, -DL1200, DA2103, DA2102/2, DA2109/2);
+    Net_fi_assets = sum(Real_fi_assets, Nominal_fi_assets);
+    Housing_stock = sum(DA1110, DA1122);
+    /* Add a calculus here (inside the macro) to create a new variable */ 
+run;
+
+%mend CREA ;
+
+/* Call the macro for the specified dataset */
+%CREA(data=datahfcs.AG_V1);
+%CREA(data=datahfcs.AG_V2);
+%CREA(data=datahfcs.AG_V3);
+%CREA(data=datahfcs.AG_V4);
+
+
+* C) ASSIGN THE CORRECT WEIGHTING TO EACH AGE CATEGORY IN THE EURO AREA ; 
+
+
+* First, Sum of weightings by age and by country ;
+
+%macro WEIGHT(data, wave,data_out, a, b, c, d=);
+
+    /* First, sort the data by the specified variables */
+    proc sort data=&data;
+        by SA0100 RA0300 IM0100;
+    run;
+
+    /* Sum the weights, excluding countries outside the euro area */
+    proc summary data=&data;
+        where SA0100 not in ('E1', 'HU', 'PL', 'HR', 'CZ');
+        var HW0010; 
+        output out=temp_hw_coun_&wave (drop=_TYPE_ _FREQ_)
+            sum=sum_HW0010_coun;
+        by SA0100 RA0300 IM0100;
+    run;
+
+    /* Calculate the average of weightings by implicates */
+    proc summary data=temp_hw_coun_&wave nway;
+        var sum_HW0010_coun;
+        output out=weight.sum_HW_RA0300_coun_&wave (drop=_TYPE_ _FREQ_)
+            mean=sum_HW0010_coun / autoname;
+        by SA0100 RA0300;
+    run;
+
+
+*Second, Sum of weightings by age ;  
+ 
+
+	/* First, sort the data by the specified variables */
+    proc sort data=&data;
+        by RA0300 IM0100;
+    run;
+
+
+   /* Sum the weights, excluding countries outside the euro area */
+    proc summary data=&data;
+        where SA0100 not in ('E1', 'HU', 'PL', 'HR', 'CZ');
+        var HW0010; 
+        output out=temp_hw_&wave. (drop=_TYPE_ _FREQ_)
+            sum=sum_HW0010;
+        by RA0300 IM0100;
+    run;
+	
+    
+    /* Calculate the average of weightings by implicates */
+    proc summary data=temp_hw_&wave. nway;
+        var sum_HW0010;
+        output out=weight.sum_HW_RA0300_&wave (drop=_TYPE_ _FREQ_)
+            mean=sum_HW0010 / autoname;
+        by RA0300;
+    run;
+    
+    /* Join all the tables  */
+
+	proc sql;
+        create table &data_out as
+        select a.*, b.Sum_HW0010, c.sum_HW0010_coun
+            %if "&d" ne "" %then %do;
+                , d.INFLA
+            %end;
+         
+        from &a as a
+        left join &b as b
+            on a.DHAGEH1 = b.RA0300
+        left join &c as c
+            on a.DHAGEH1 = c.RA0300 and a.SA0100 = c.SA0100
+            %if "&d" ne "" %then %do;
+                left join &d as d
+                on a.SA0100 = d.SA0100
+            %end;;
+    quit;
+    
+    /*Weighting coefficient (Proportion)*/
+    data &data_out; 
+        set &data_out; 
+        Prop = sum_HW0010_coun / Sum_HW0010; 
+    run;
+    
+%mend WEIGHT;  
+
+/* Call the macro for the specified datasets */  
+/* Use the dataset with all the observations */ 
+	
+%weight (data=datahfcs.hfcs2010, wave=V1, data_out=datahfcs.hfcs2010_renorm, a=datahfcs.AG_V1, 
+b=weight.sum_hw_ra0300_v1, c=weight.sum_hw_ra0300_coun_v1, d=infla.inflation_v1);
+
+%weight (data=datahfcs.hfcs2014, wave=V2, data_out=datahfcs.hfcs2014_renorm, a=datahfcs.AG_V2, 
+b=weight.sum_hw_ra0300_v2, c=weight.sum_hw_ra0300_coun_v2, d=infla.inflation_v2);
+
+%weight (data=datahfcs.hfcs2017, wave=V3, data_out=datahfcs.hfcs2017_renorm, a=datahfcs.AG_V3, 
+b=weight.sum_hw_ra0300_v3, c=weight.sum_hw_ra0300_coun_v3, d=infla.inflation_v3);
+
+%weight(data=datahfcs.hfcs2021, wave=V4, data_out=datahfcs.hfcs2021_renorm, a=datahfcs.AG_V4, 
+b=weight.sum_hw_ra0300_v4, c=weight.sum_hw_ra0300_coun_v4);
+
+
+*Multiplication of variables by the population and inflation coefficients ; 
+
+
+%macro renorm_variable(data, variables);
+
+data &data.;
+    set &data.;
+
+    %* Loop through each variable and apply the renormalization formula;
+    %let count = %sysfunc(countw(&variables));
+    %do i = 1 %to &count;
+        %let var = %scan(&variables, &i);
+        &var._renorm = &var * prop; /* renormalisation coeficient */ 
+        /* Here it checks if the dataset is for the years 2010, 2014, or 2017 and apply the renormalization formula, because 
+        is not necessary to apply the coeficient for the year 2021 */ ;
+        %if %index(&data, 2010) or %index(&data, 2014) or %index(&data, 2017) %then %do;
+            &var._renorm_real = &var._renorm * INFLA; /* inflation coeficient */ 
+        %end;
+    %end;
+run;
+
+%mend renorm_variable;
+
+/* Call the macro for the specified datasets */  
+%renorm_variable(data=datahfcs.hfcs2010_renorm, variables=Housing_stock Real_fi_assets 
+Nominal_fi_assets Net_fi_assets DA1110 DA1122 DA2101 DA1200 DA2104 DA2105 
+DA2102 DA2109 DL1100 DL1200 DA2103 );
+
+%renorm_variable(data=datahfcs.hfcs2014_renorm, variables=Housing_stock Real_fi_assets 
+Nominal_fi_assets Net_fi_assets DA1110 DA1122 DA2101 DA1200 DA2104 DA2105 
+DA2102 DA2109 DL1100 DL1200 DA2103 DOCOGOOD);
+
+%renorm_variable(data=datahfcs.hfcs2017_renorm, variables=Housing_stock Real_fi_assets 
+Nominal_fi_assets Net_fi_assets DA1110 DA1122 DA2101 DA1200 DA2104 DA2105 
+DA2102 DA2109 DL1100 DL1200 DA2103 DOCOGOOD);
+
+%renorm_variable(data=datahfcs.hfcs2021_renorm, variables=Housing_stock Real_fi_assets 
+Nominal_fi_assets Net_fi_assets DA1110 DA1122 DA2101 DA1200 DA2104 DA2105 
+DA2102 DA2109 DL1100 DL1200 DA2103 DOCOGOOD);
+
+
+
+*Sum of the share from all countries by age ; 
+
+	/* nominal variables */
+
+%macro final_table_nominal (data, data_out) ;
+
+proc sql;
+    create table &data_out. as
+    select DHAGEH1,
+           sum(Housing_stock_renorm) as Housing_stock,
+           sum(Real_fi_assets_renorm) as Real_fi_assets,
+           sum(Nominal_fi_assets_renorm) as Nominal_fi_assets,
+           sum(Net_fi_assets_renorm) as Net_fi_assets,
+           sum(DA1110_renorm) as DA1110,
+           sum(DA1122_renorm) as DA1122,
+           sum(DA2101_renorm) as DA2101,
+           sum(DA1200_renorm) as DA1200,
+           sum(DA2104_renorm) as DA2104,
+           sum(DA2105_renorm) as DA2105,
+           sum(DA2102_renorm) as DA2102,
+           sum(DA2109_renorm) as DA2109,
+           sum(DL1100_renorm) as DL1100,
+           sum(DL1200_renorm) as DL1200,
+           sum(DA2103_renorm) as DA2103, 
+           sum(DOCOGOOD_renorm) as consumption
+    from &data.
+    group by DHAGEH1
+    order by DHAGEH1;
+quit;
+
+%mend final_table_nominal  ; 
+
+/* Call the macro for the specified datasets */  
+%final_table_nominal (data=datahfcs.hfcs2010_renorm, data_out = final.hfcs2010_final_nominal);
+%final_table_nominal (data=datahfcs.hfcs2014_renorm, data_out = final.hfcs2014_final_nominal);
+%final_table_nominal (data=datahfcs.hfcs2017_renorm, data_out = final.hfcs2017_final_nominal);
+%final_table_nominal (data=datahfcs.hfcs2021_renorm, data_out = final.hfcs2021_final_nominal);
+
+
+
+	/* real variables */
+
+%macro final_table_real(data, data_out);
+
+proc sql;
+    create table &data_out. as
+    select DHAGEH1,
+           sum(Housing_stock_renorm_real) as Housing_stock,
+           sum(Real_fi_assets_renorm_real) as Real_fi_assets,
+           sum(Nominal_fi_assets_renorm_real) as Nominal_fi_assets,
+           sum(Net_fi_assets_renorm_real) as Net_fi_assets,
+           sum(DA1110_renorm_real) as DA1110,
+           sum(DA1122_renorm_real) as DA1122,
+           sum(DA2101_renorm_real) as DA2101,
+           sum(DA1200_renorm_real) as DA1200,
+           sum(DA2104_renorm_real) as DA2104,
+           sum(DA2105_renorm_real) as DA2105,
+           sum(DA2102_renorm_real) as DA2102,
+           sum(DA2109_renorm_real) as DA2109,
+           sum(DL1100_renorm_real) as DL1100,
+           sum(DL1200_renorm_real) as DL1200,
+           sum(DA2103_renorm_real) as DA2103,
+           sum(DOCOGOOD_renorm_real) as consumption
+    from &data.
+    group by DHAGEH1
+    order by DHAGEH1;
+quit;
+
+%mend final_table_real;
+
+
+/* Call the macro for the specified datasets */  
+*Only for the wave 2010, 2014, 2017 ;
+
+%final_table_real(data=datahfcs.hfcs2010_renorm, data_out=final.hfcs2010_final_real);
+%final_table_real(data=datahfcs.hfcs2014_renorm, data_out=final.hfcs2014_final_real);
+%final_table_real(data=datahfcs.hfcs2017_renorm, data_out=final.hfcs2017_final_real);
+
+
+
+
+
+/**************************************************************************/
+
+						/* PART : II */
+
+			*Variables available at the individual level 
+			
+			Variables:  PE0600 PG0210 PG0110 ; 
+
+/**************************************************************************/
+
+/**************************************************************************/
+*CREATION OF NEW VARIABLES ; 
+/**************************************************************************/
+
+*Labor_income = PG0110,  gross cash employee income
+			    + PG0210,  gross self-employment income ;
+			   
+
+
+%macro CREA2 (data) ;
+
+data &data. ;
+    set &data. ;
+    Labor_income = sum(PG0110, PG0210);
+run;
+
+%mend CREA2 ;
+
+/* Call the macro for the specified datasets */  
+%CREA2 (data=datahfcs.hfcs2010);
+%CREA2 (data=datahfcs.hfcs2014);
+%CREA2 (data=datahfcs.hfcs2017);
+%CREA2 (data=datahfcs.hfcs2021);
+
+
+*CREATION OF THE INFLATION ADJUSTMENT FACTOR ; 
+
+	/* Add the INFLA column to the tables */
+
+%macro join(a, d);
+    %local dsid varnum;
+
+    /* Open the dataset &a and check for existence of the variable INFLA */
+    %let dsid = %sysfunc(open(&a));
+    %let varnum = %sysfunc(varnum(&dsid, INFLA));
+    %if &varnum = 0 %then %do;
+        /* Close the dataset before altering it */
+        %let dsid = %sysfunc(close(&dsid));
+        /* If INFLA does not exist, add it using another data step */
+        data &a;
+            set &a;
+            INFLA = .; /* Initialize INFLA with missing values */
+        run;
+    %end;
+    %else %do;
+        %let dsid = %sysfunc(close(&dsid));
+    %end;
+
+    /* Update INFLA in the dataset &a from &d */
+    proc sql;
+        update &a as a 
+        set INFLA = (select d.INFLA from &d as d where d.SA0100 = a.SA0100);
+    quit;
+%mend join;
+
+/* Call the macro for the specified datasets */  
+*There is no need to add it to he last wave because it is not necessary to 
+add the inflation ajustment coefficient.;
+
+%join(a=datahfcs.hfcs2010, d=infla.inflation_v1);
+%join(a=datahfcs.hfcs2014, d=infla.inflation_v2);
+%join(a=datahfcs.hfcs2017, d=infla.inflation_v3);
+
+
+	/* Multiply the inflation by the variables */ 
+
+%macro renorm_variable_2(data, varname);
+
+data &data.;
+    set &data.;
+
+    %* Loop through each variable and apply the conditional renormalization formula;
+    %let count = %sysfunc(countw(&variables));
+    %do i = 1 %to &count;
+        %let var = %scan(&variables, &i);
+        %* Check if the dataset is for the years 2010, 2014, or 2017 and apply the renormalization formula;
+        %if %index(&data, 2010) or %index(&data, 2014) or %index(&data, 2017) %then %do;
+            &var._real = &var * INFLA;
+        %end;
+    %end;
+run;
+
+%mend renorm_variable_2;
+
+/* Call the macro for the specified datasets */  
+%renorm_variable_2(data=datahfcs.hfcs2010, 
+				 varname= Labor_income );
+
+%renorm_variable_2(data=datahfcs.hfcs2014, 
+				 varname= Labor_income);
+
+%renorm_variable_2(data=datahfcs.hfcs2017, 
+				 varname= Labor_income);
+				 
+
+				 
+/**************************************************************************/ 
+/*AGREGATION OF VARIABLES */ 
+/**************************************************************************/
+
+
+
+%macro AGHFCS2(data, varname_nominal, varname_real, wave); 
+
+    /* Ensure data is sorted by the classification variables */
+    proc sort data=&data;
+        by RA0300 IM0100;  
+    run;
+   
+    /* Calculate the weighted mean for nominal variables */
+    proc summary data=&data nway;
+        where SA0100 not in ('E1', 'HU', 'PL', 'HR', 'CZ') and RA0300 > 19; 
+        var &varname_nominal;  
+        output out=summary_nominal_&wave (drop=_TYPE_ _FREQ_)
+            mean=&varname_nominal / autoname; 
+        by RA0300 IM0100;
+        weight HW0010; 
+    run;
+    
+     /* Calculate unweighted mean of previously computed weighted means by RA0300 */
+    proc summary data=summary_nominal_&wave nway;
+        var &varname_nominal;  
+        output out=summary2_nominal_&wave (drop=_TYPE_ _FREQ_)
+            mean=&varname_nominal / autoname;  
+        by RA0300;  
+    run;
+
+    %if "&varname_real" ne "" %then %do;
+        /* Calculate the weighted mean for real variables */
+        proc summary data=&data nway;
+            where SA0100 not in ('E1', 'HU', 'PL', 'HR', 'CZ') and RA0300 > 19; 
+            var &varname_real;  
+            output out=summary_real_&wave (drop=_TYPE_ _FREQ_)
+                mean=&varname_real/ autoname; 
+            by RA0300 IM0100;
+            weight HW0010; 
+        run;
+      
+        /* Calculate unweighted mean of previously computed weighted means by RA0300 */
+    proc summary data=summary_real_&wave nway;
+        var &varname_real;  
+        output out=summary2_real_&wave (drop=_TYPE_ _FREQ_)
+            mean=&varname_real / autoname;  
+        by RA0300;
+
+	 %end;
+	 
+  
+%mend AGHFCS2;
+
+/* Call the macro for the specified datasets */  
+%AGHFCS2(data=datahfcs.hfcs2010, 
+         varname_nominal=PE0600 Labor_income, 
+         varname_real= Labor_income_real, 
+         wave=V1);
+
+%AGHFCS2(data=datahfcs.hfcs2014, 
+         varname_nominal=PE0600 Labor_income, 
+         varname_real= Labor_income_real, 
+         wave=V2);
+
+%AGHFCS2(data=datahfcs.hfcs2017, 
+         varname_nominal=PE0600 Labor_income, 
+         varname_real=Labor_income_real, 
+         wave=V3);
+
+%AGHFCS2(data=datahfcs.hfcs2021, 
+         varname_nominal=PE0600 Labor_income, 
+         varname_real=, 
+         wave=V4);
+
+
+	 
+/* Combine the variables with the final tables created previously */
+
+
+%macro join2 (nominal, real, wave ) ;
+
+	data &nominal. ;
+	    set &nominal. ;
+	    PE0600 = .;  /* Initialize new variable with missing values */
+	    Labor_income = .;  
+	run;
+	
+	proc sql;
+	    update &nominal. a /* Add or remove the variables thaht you want */ 
+	    set PE0600 = (select b.PE0600 from summary2_nominal_&wave b where a.DHAGEH1 = b.RA0300),
+	        Labor_income = (select b.Labor_income from summary2_nominal_&wave b where a.DHAGEH1 = b.RA0300);
+	quit;
+	
+	%if "&real" ne "" %then %do;
+	
+		data &real. ;
+		    set &real. ;
+		    Labor_income_real = .;  /* Initialize new variable with missing values */
+		run;
+		
+		proc sql;
+		    update &real. a  /* Add or remove the variables thaht you want */
+		    set Labor_income_real = (select b.Labor_income_real from summary2_real_&wave b where a.DHAGEH1 = b.RA0300);
+		quit;
+	
+	%end;
+
+%mend join2; 
+
+
+/* Call the macro for the specified datasets */  
+%join2 (nominal=final.hfcs2010_final_nominal,
+		real = final.hfcs2010_final_real,
+		wave=V1)
+
+%join2 (nominal=final.hfcs2014_final_nominal,
+		real = final.hfcs2014_final_real,
+		wave=V2)
+
+%join2 (nominal=final.hfcs2017_final_nominal,
+		real = final.hfcs2017_final_real,
+		wave=V3)
+		
+%join2 (nominal=final.hfcs2021_final_nominal,
+		real = ,
+		wave=V4)
+
+
+
+
+
+
+
+
+
+
