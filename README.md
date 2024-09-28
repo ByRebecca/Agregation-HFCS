@@ -1,0 +1,1 @@
+Here is one of the codes in SAS that I wrote during my internship at the Bank of France for the calculation of variables used in a macroeconomic paper. This is only the final code without the statistical description
